@@ -25,8 +25,11 @@ jobs:
                 symfony-version:
                     - '4.4.*'
                     - '5.4.*'
+                    - '6.0.*'
                     - '6.1.*'
                 exclude:
+                    - php-version: '7.4'
+                      symfony-version: '6.0.*'
                     - php-version: '7.4'
                       symfony-version: '6.1.*'
                     - php-version: '8.0'
