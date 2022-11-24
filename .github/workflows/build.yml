@@ -47,12 +47,16 @@ jobs:
                   php-version: ${{ matrix.php-version }}
                   tools: composer:v2, flex
 
+            # This works around SYMFONY_REQUIRE currently not working (https://github.com/symfony/flex/issues/946):
+            - name: Lock Symfony version
+              run: VERSION=${{ matrix.symfony-version }} .github/workflows/lock-symfony-version.sh
+
             - name: Install dependencies
               run: |
                   composer config --no-plugins allow-plugins.dealerdirect/phpcodesniffer-composer-installer true
                   composer install --prefer-dist --no-progress --no-plugins
-              env:
-                  SYMFONY_REQUIRE: "${{ matrix.symfony-version }}"
+              #env:
+              #    SYMFONY_REQUIRE: "${{ matrix.symfony-version }}"
 
             - name: Run Psalm
               run: vendor/bin/psalm src --no-progress --php-version=${{ matrix.php-version }}
