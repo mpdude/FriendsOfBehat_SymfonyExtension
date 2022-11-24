@@ -49,35 +49,16 @@ jobs:
 
             - name: Install dependencies
               run: |
+                  composer config --no-plugins allow-plugins.dealerdirect/phpcodesniffer-composer-installer true
                   composer install --prefer-dist --no-progress --no-plugins
               env:
                   SYMFONY_REQUIRE: "${{ matrix.symfony-version }}"
 
+            - name: Run Psalm
+              run: vendor/bin/psalm src --no-progress --php-version=${{ matrix.php-version }}
+
             - name: Run tests
               run: composer test
-
-    psalm:
-        name: Run Psalm
-        runs-on: ubuntu-22.04
-        continue-on-error: false
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v3
-
-            - name: Setup PHP
-              uses: shivammathur/setup-php@v2
-              with:
-                  coverage: none
-                  ini-values: "memory_limit=-1, zend.assertions=1"
-                  php-version: 8.1
-                  tools: composer:v2, flex
-
-            - name: Install dependencies
-              run: |
-                  composer install --prefer-dist --no-progress --no-plugins
-
-            - name: Run Psalm
-              run: vendor/bin/psalm src --no-progress
 
     validate-composer:
         name: Validate composer.json
